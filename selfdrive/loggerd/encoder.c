@@ -240,7 +240,7 @@ void encoder_init(EncoderState *s, const char* filename, int width, int height, 
   err = OMX_GetParameter(s->handle, OMX_IndexParamPortDefinition,
                          (OMX_PTR) &in_port);
   assert(err == OMX_ErrorNone);
-  s->num_in_bufs = in_port.nBufferCountActual;
+  int min_in_bufs = in_port.nBufferCountMin;
 
   // printf("in width: %d, stride: %d\n",
   //   in_port.format.video.nFrameWidth, in_port.format.video.nStride);
@@ -271,7 +271,19 @@ void encoder_init(EncoderState *s, const char* filename, int width, int height, 
   err = OMX_GetParameter(s->handle, OMX_IndexParamPortDefinition,
                          (OMX_PTR) &out_port);
   assert(err == OMX_ErrorNone);
+  int min_out_bufs = out_port.nBufferCountMin;
+
+  int req_num_bufs = min_in_bufs > min_out_bufs ? min_in_bufs : min_out_bufs;
+  in_port.nBufferCountActual = req_num_bufs;
+  err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, (OMX_PTR) &in_port);
+  assert(err == OMX_ErrorNone);
+  out_port.nBufferCountActual = req_num_bufs;
+  err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, (OMX_PTR) &out_port);
+  assert(err == OMX_ErrorNone);
+
+  s->num_in_bufs = in_port.nBufferCountActual;
   s->num_out_bufs = out_port.nBufferCountActual;
+  LOGD("in_buf requires %d, using %d; out_buf requires %d, using %d.", min_in_bufs, s->num_in_bufs, min_out_bufs, s->num_out_bufs);
 
   OMX_VIDEO_PARAM_BITRATETYPE bitrate_type = {0};
   bitrate_type.nSize = sizeof(bitrate_type);
