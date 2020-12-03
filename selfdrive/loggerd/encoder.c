@@ -385,11 +385,14 @@ void encoder_init(EncoderState *s, const char* filename, int width, int height, 
   }
 }
 
-static void handle_out_buf(EncoderState *s, OMX_BUFFERHEADERTYPE *out_buf) {
+static void handle_out_buf(EncoderState *s, OMX_BUFFERHEADERTYPE *out_buf, bool eos) {
   int err;
+  static int c = 0;
+  static int c_last = 0;
   uint8_t *buf_data = out_buf->pBuffer + out_buf->nOffset;
 
   if (out_buf->nFlags & OMX_BUFFERFLAG_CODECCONFIG) {
+    printf("%s got CODECCONFIG flag, len %d\n", s->filename, out_buf->nFilledLen);
     if (s->codec_config_len < out_buf->nFilledLen) {
       s->codec_config = realloc(s->codec_config, out_buf->nFilledLen);
     }
@@ -398,7 +401,13 @@ static void handle_out_buf(EncoderState *s, OMX_BUFFERHEADERTYPE *out_buf) {
   }
 
   if (s->of) {
-    //printf("write %d flags 0x%x\n", out_buf->nFilledLen, out_buf->nFlags);
+    c += 1;
+    if (out_buf->nFlags & 0x20) {
+      printf("%s write %d flags 0x%x, from last %d\n", s->filename, out_buf->nFilledLen, out_buf->nFlags, c - c_last);
+      c_last = c;
+    } else {
+      printf("%s write %d flags 0x%x\n", s->filename, out_buf->nFilledLen, out_buf->nFlags);
+    }
     fwrite(buf_data, out_buf->nFilledLen, 1, s->of);
   }
 
@@ -442,6 +451,10 @@ static void handle_out_buf(EncoderState *s, OMX_BUFFERHEADERTYPE *out_buf) {
   }
 
   // give omx back the buffer
+  if (eos) {
+    printf("%s returning buf with flag\n", s->filename);
+    out_buf->nFlags |= OMX_BUFFERFLAG_EOS;
+  }
   err = OMX_FillThisBuffer(s->handle, out_buf);
   assert(err == OMX_ErrorNone);
 }
@@ -523,7 +536,7 @@ int encoder_encode_frame(EncoderState *s,
     if (!out_buf) {
       break;
     }
-    handle_out_buf(s, out_buf);
+    handle_out_buf(s, out_buf, false);
   }
 
   s->dirty = true;
@@ -584,6 +597,7 @@ void encoder_open(EncoderState *s, const char* path) {
     assert(s->of);
     if (s->codec_config_len > 0) {
       fwrite(s->codec_config, s->codec_config_len, 1, s->of);
+      printf("%s write config len %d\n", s->filename, (int)s->codec_config_len);
     }
   }
 
@@ -608,24 +622,20 @@ void encoder_close(EncoderState *s) {
     if (s->dirty) {
       // drain output only if there could be frames in the encoder
 
+
+      OMX_BUFFERHEADERTYPE *out_buf = queue_try_pop(&s->done_out);
+      while (out_buf) {
+        handle_out_buf(s, out_buf, false);
+        out_buf = queue_try_pop(&s->done_out);
+      }
+
       OMX_BUFFERHEADERTYPE* in_buf = queue_pop(&s->free_in);
       in_buf->nFilledLen = 0;
-      in_buf->nOffset = 0;
       in_buf->nFlags = OMX_BUFFERFLAG_EOS;
-      in_buf->nTimeStamp = 0;
 
       err = OMX_EmptyThisBuffer(s->handle, in_buf);
       assert(err == OMX_ErrorNone);
 
-      while (true) {
-        OMX_BUFFERHEADERTYPE *out_buf = queue_pop(&s->done_out);
-
-        handle_out_buf(s, out_buf);
-
-        if (out_buf->nFlags & OMX_BUFFERFLAG_EOS) {
-          break;
-        }
-      }
       s->dirty = false;
     }
 

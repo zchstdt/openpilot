@@ -60,7 +60,7 @@
 #define DCAM_BITRATE MAIN_BITRATE
 #endif
 
-#define NO_CAMERA_PATIENCE 500 // fall back to time-based rotation if all cameras are dead
+#define NO_CAMERA_PATIENCE 500999 // fall back to time-based rotation if all cameras are dead
 
 LogCameraInfo cameras_logged[LOG_CAMERA_ID_MAX] = {
   [LOG_CAMERA_ID_FCAMERA] = {
@@ -294,7 +294,7 @@ void encoder_thread(RotateState *rotate_state, bool raw_clips, int cam_idx) {
         pthread_mutex_unlock(&s.rotate_lock);
 
         // wait if camera pkt id is older than stream
-        rotate_state->waitLogThread();
+        // rotate_state->waitLogThread();
 
         if (do_exit) break;
 
@@ -355,6 +355,7 @@ void encoder_thread(RotateState *rotate_state, bool raw_clips, int cam_idx) {
       uint8_t *u = y + (buf_info.width*buf_info.height);
       uint8_t *v = u + (buf_info.width/2)*(buf_info.height/2);
       {
+        printf("encoding fwts %d\n", extra.frame_id);
         // encode hevc
         int out_segment = -1;
         int out_id = encoder_encode_frame(&encoder,
@@ -368,6 +369,7 @@ void encoder_thread(RotateState *rotate_state, bool raw_clips, int cam_idx) {
                                buf_info.width, buf_info.height,
                                &out_segment_alt, &extra);
         }
+        continue;
 
         // publish encode index
         MessageBuilder msg;
@@ -685,7 +687,7 @@ int main(int argc, char** argv) {
   double last_rotate_tms = millis_since_boot();
   double last_camera_seen_tms = millis_since_boot();
   while (!do_exit) {
-   for (auto sock : poller->poll(100 * 1000)) {
+   for (auto sock : poller->poll(500)) {
      Message * last_msg = nullptr;
       while (true) {
         Message * msg = sock->receive(true);
@@ -695,7 +697,7 @@ int main(int argc, char** argv) {
         delete last_msg;
         last_msg = msg;
 
-        logger_log(&s.logger, (uint8_t*)msg->getData(), msg->getSize(), qlog_counter[sock] == 0);
+        //logger_log(&s.logger, (uint8_t*)msg->getData(), msg->getSize(), qlog_counter[sock] == 0);
 
         if (qlog_counter[sock] != -1) {
           //printf("%p: %d/%d\n", socks[i], qlog_counter[socks[i]], qlog_freqs[socks[i]]);

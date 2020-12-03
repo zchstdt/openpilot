@@ -45,14 +45,16 @@ void run_frame_stream(MultiCameraState *s) {
   CameraState *const rear_camera = &s->rear;
   auto *tb = &rear_camera->buf.camera_tb;
 
+  uint32_t cnt = 0;
   while (!do_exit) {
-    if (s->sm->update(1000) == 0) continue;
+    if (s->sm->update(100) == 0) continue;
 
     auto frame = (*(s->sm))["frame"].getFrame();
 
     const int buf_idx = tbuffer_select(tb);
+    cnt = frame.getFrameId();
     rear_camera->buf.camera_bufs_metadata[buf_idx] = {
-      .frame_id = frame.getFrameId(),
+      .frame_id = cnt,
       .timestamp_eof = frame.getTimestampEof(),
       .frame_length = static_cast<unsigned>(frame.getFrameLength()),
       .integ_lines = static_cast<unsigned>(frame.getIntegLines()),
@@ -64,6 +66,7 @@ void run_frame_stream(MultiCameraState *s) {
 
     clEnqueueWriteBuffer(q, yuv_cl, CL_TRUE, 0, frame.getImage().size(), frame.getImage().begin(), 0, NULL, NULL);
     tbuffer_dispatch(tb, buf_idx);
+    printf("frame %d got, dispatching\n", cnt);
   }
 }
 
