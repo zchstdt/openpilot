@@ -333,7 +333,7 @@ void set_exposure_target(CameraState *c, const uint8_t *pix_ptr, int x_start, in
     lum_cur += lum_binning[lum_med];
 #ifdef QCOM2
     bool reach_hlc_perc = false;
-    if (c->camera_num == 0) { // wide
+    if (false) { // wide
       reach_hlc_perc = lum_cur > 2*lum_total / (3*HLC_A);
     } else {
       reach_hlc_perc = lum_cur > lum_total / HLC_A;

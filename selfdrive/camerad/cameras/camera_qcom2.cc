@@ -1128,7 +1128,7 @@ void camera_process_frame(MultiCameraState *s, CameraState *c, int cnt) {
     int exposure_y;
     int exposure_width;
     int exposure_height;
-    if (c == &s->rear) {
+    if (true) {
       exposure_x = 96;
       exposure_y = 160;
       exposure_width = 1734;
