@@ -44,10 +44,11 @@ void init_weights(double pathCost, double yawRateCost, double steerRateCost){
     acadoVariables.W[NY*NY*i + (NY+1)*1] = yawRateCost * f;
     acadoVariables.W[NY*NY*i + (NY+1)*2] = steerRateCost * f;
   }
-  acadoVariables.WN[(NYN+1)*0] = pathCost * STEP_MULTIPLIER;
+  acadoVariables.WN[(NYN+1)*0] = 0*pathCost * STEP_MULTIPLIER;
 }
 
 void init(double pathCost, double yawRateCost, double steerRateCost){
+  printf("HALLLOOOO \n");
   acado_initializeSolver();
   int    i;
 
@@ -65,25 +66,27 @@ void init(double pathCost, double yawRateCost, double steerRateCost){
   init_weights(pathCost, yawRateCost, steerRateCost);
 }
 
-int run_mpc(state_t * x0, log_t * solution, double d_poly[4],
-             double dpsi_poly[4], double v_ref){
+
+int run_mpc(state_t * x0, log_t * solution,
+            double y_pts[17],
+            double dpsi_pts[17],
+            double ddpsi_pts[17],
+            double v_ref){
 
   int    i;
 
-  for (i = 0; i <= NOD * N; i+= NOD){
-    acadoVariables.od[i+0] = v_ref;
-
-    acadoVariables.od[i+1] = d_poly[0];
-    acadoVariables.od[i+2] = d_poly[1];
-    acadoVariables.od[i+3] = d_poly[2];
-    acadoVariables.od[i+4] = d_poly[3];
-
-    acadoVariables.od[i+5] = dpsi_poly[0];
-    acadoVariables.od[i+6] = dpsi_poly[1];
-    acadoVariables.od[i+7] = dpsi_poly[2];
-    acadoVariables.od[i+8] = dpsi_poly[3];
-
+  printf("HALLLOOOO \n");
+  printf("%f \n", v_ref);
+  printf("HALLLOOOO2 \n");
+  for (i = 0; i <= N; ++i){
+    acadoVariables.od[i] = v_ref;
+    acadoVariables.y[NY*i] = y_pts[i];
+    printf("%f \n", y_pts[i]);
+    acadoVariables.y[NY*i + 1] = dpsi_pts[i];
+    acadoVariables.y[NY*i+ 2] = ddpsi_pts[i];
   }
+  acadoVariables.y[66] = ddpsi_pts[i];
+  acadoVariables.yN[0] = y_pts[16];
 
   acadoVariables.x0[0] = x0->x;
   acadoVariables.x0[1] = x0->y;
@@ -94,8 +97,8 @@ int run_mpc(state_t * x0, log_t * solution, double d_poly[4],
   acado_preparationStep();
   acado_feedbackStep();
 
-  /* printf("lat its: %d\n", acado_getNWSR());  // n iterations
-  printf("Objective: %.6f\n", acado_getObjective());  // solution cost */
+  printf("lat its: %d\n", acado_getNWSR());  // n iterations
+  printf("Objective: %.6f\n", acado_getObjective());  // solution cost 
 
   for (i = 0; i <= N; i++){
     solution->x[i] = acadoVariables.x[i*NX];

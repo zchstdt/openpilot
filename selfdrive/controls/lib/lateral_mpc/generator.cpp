@@ -3,7 +3,11 @@
 #define PI 3.1415926536
 #define deg2rad(d) (d/180.0*PI)
 
-const int controlHorizon = 50;
+const int controlHorizon = 17;
+double T_IDXS[17] = {0., 0.00976562, 0.0390625 , 0.08789062, 0.15625,
+                            0.24414062, 0.3515625 , 0.47851562, 0.625     , 0.79101562,
+                            0.9765625 , 1.18164062, 1.40625   , 1.65039062, 1.9140625 ,
+                            2.19726562, 2.5};
 
 using namespace std;
 #include <iostream>
@@ -22,9 +26,6 @@ int main( )
   DifferentialState dpsi;
 
   OnlineData v_ref; // m/s
-  OnlineData d_poly_r0, d_poly_r1, d_poly_r2, d_poly_r3;
-  OnlineData dpsi_poly_r0, dpsi_poly_r1, dpsi_poly_r2, dpsi_poly_r3;
-
   Control ddpsi;
 
   // Equations of motion
@@ -33,51 +34,28 @@ int main( )
   f << dot(psi) == dpsi;
   f << dot(dpsi) == ddpsi;
 
-  auto poly_d = d_poly_r0*(xx*xx*xx) + d_poly_r1*(xx*xx) + d_poly_r2*xx + d_poly_r3;
-  auto poly_dpsi = dpsi_poly_r0*(xx*xx*xx) + dpsi_poly_r1*(xx*xx) + dpsi_poly_r2*xx + dpsi_poly_r3;
-  auto poly_ddpsi = 3*dpsi_poly_r0*(xx*xx) + 2*dpsi_poly_r1*(xx) + dpsi_poly_r2;
-
   // Running cost
   Function h;
 
   // Distance errors
-  h << (poly_d - yy);
+  h << yy;
 
   // Yaw rate trajectory error
-  h << (poly_dpsi - dpsi);
+  h << dpsi;
   
   // Angular rate error
-  h << (poly_ddpsi - ddpsi);
-
-  BMatrix Q(3,3); Q.setAll(true);
-  // Q(0,0) = 1.0;
-  // Q(1,1) = 1.0;
-  // Q(2,2) = 1.0;
-
+  h << ddpsi;
+  
   // Terminal cost
   Function hN;
+  hN << yy;
 
-  // Distance errors
-  hN << (poly_d - yy);
-
+  BMatrix Q(3,3); Q.setAll(true);
   BMatrix QN(1,1); QN.setAll(true);
-  // QN(0,0) = 1.0;
 
-  // Non uniform time grid
-  // First 5 timesteps are 0.05, after that it's 0.15
-  DMatrix numSteps(20, 1);
-  for (int i = 0; i < 5; i++){
-    numSteps(i) = 1;
-  }
-  for (int i = 5; i < 20; i++){
-    numSteps(i) = 3;
-  }
-
-  // Setup Optimal Control Problem
-  const double tStart = 0.0;
-  const double tEnd   = 2.5;
-
-  OCP ocp( tStart, tEnd, numSteps);
+  Grid times(17, T_IDXS);
+  //OCP ocp(times);
+  OCP ocp(0, 2.5, 16);
   ocp.subjectTo(f);
 
   ocp.minimizeLSQ(Q, h);
@@ -87,9 +65,12 @@ int main( )
   ocp.subjectTo( deg2rad(-90) <= psi <= deg2rad(90));
   // more than absolute max steer angle
   ocp.subjectTo( deg2rad(-50) <= ddpsi <= deg2rad(50));
-  ocp.setNOD(9);
+  ocp.setNOD(1);
 
-  OCPexport mpc(ocp);
+  printf("CATANDSDOGS\n");
+ 
+
+  OCPexport mpc(ocp); 
   mpc.set( HESSIAN_APPROXIMATION, GAUSS_NEWTON );
   mpc.set( DISCRETIZATION_TYPE, MULTIPLE_SHOOTING );
   mpc.set( INTEGRATOR_TYPE, INT_RK4 );
