@@ -3,7 +3,7 @@ from common.numpy_fast import clip
 from selfdrive.car import apply_toyota_steer_torque_limits, create_gas_command, make_can_msg
 from selfdrive.car.toyota.toyotacan import create_steer_command, create_ui_command, \
                                            create_accel_command, create_acc_cancel_command, \
-                                           create_fcw_command
+                                           create_fcw_command, create_lta_steer_command
 from selfdrive.car.toyota.values import Ecu, CAR, STATIC_MSGS, NO_STOP_TIMER_CAR, CarControllerParams
 from opendbc.can.packer import CANPacker
 
@@ -144,9 +144,11 @@ class CarController():
       can_sends.append(create_fcw_command(self.packer, fcw_alert))
 
     #*** static msgs ***
-
     for (addr, ecu, cars, bus, fr_step, vl) in STATIC_MSGS:
       if frame % fr_step == 0 and ecu in self.fake_ecus and CS.CP.carFingerprint in cars:
         can_sends.append(make_can_msg(addr, vl, bus))
+
+    if CS.CP.carFingerprint in [CAR.CAMRY_TSS2, CAR.HIGHLANDERH_TSS2]:
+      can_sends.append(create_lta_steer_command(self.packer, 0, 0, frame))
 
     return can_sends
