@@ -6,6 +6,7 @@
 #include <iostream>
 #include "common/util.h"
 #include "common/timing.h"
+#include "common/swaglog.h"
 #include <algorithm>
 
 #define NANOVG_GLES3_IMPLEMENTATION
@@ -144,6 +145,12 @@ static void ui_draw_line(UIState *s, const vertex_data *v, const int cnt, NVGcol
 }
 
 static void draw_frame(UIState *s) {
+  VisionBuf * f = s->last_frame;
+  if (f == nullptr){
+    LOGE("Calling draw_frame() without current frame");
+    return;
+  }
+
   mat4 *out_mat;
   if (s->scene.frontview) {
     glBindVertexArray(s->frame_vao[1]);
@@ -154,14 +161,12 @@ static void draw_frame(UIState *s) {
   }
   glActiveTexture(GL_TEXTURE0);
 
-  if (s->last_frame) {
-    glBindTexture(GL_TEXTURE_2D, s->texture[s->last_frame->idx]->frame_tex);
+  glBindTexture(GL_TEXTURE_2D, s->texture[f->idx]->frame_tex);
+
+  // this is handled in ion on QCOM
 #ifndef QCOM
-    // this is handled in ion on QCOM
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, s->last_frame->width, s->last_frame->height,
-                 0, GL_RGB, GL_UNSIGNED_BYTE, s->last_frame->addr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, f->width, f->height, 0, GL_RGB, GL_UNSIGNED_BYTE, f->addr);
 #endif
-  }
 
   glUseProgram(s->gl_shader->prog);
   glUniform1i(s->gl_shader->getUniformLocation("uTexture"), 0);
@@ -272,7 +277,7 @@ static void ui_draw_vision_face(UIState *s) {
 static void ui_draw_driver_view(UIState *s) {
   s->scene.sidebar_collapsed = true;
   const bool is_rhd = s->scene.is_rhd;
-  const Rect &viz_rect = s->scene.viz_rect; 
+  const Rect &viz_rect = s->scene.viz_rect;
   const int width = 3 * viz_rect.w / 4;
   const Rect rect = {viz_rect.centerX() - width / 2, viz_rect.y, width, viz_rect.h};  // x, y, w, h
   const Rect valid_rect = {is_rhd ? rect.right() - rect.h / 2 : rect.x, rect.y, rect.h / 2, rect.h};
@@ -349,7 +354,7 @@ static void ui_draw_vision_alert(UIState *s) {
                   .h = alr_h};
 
   ui_fill_rect(s->vg, rect, color);
-  ui_fill_rect(s->vg, rect, nvgLinearGradient(s->vg, rect.x, rect.y, rect.x, rect.bottom(), 
+  ui_fill_rect(s->vg, rect, nvgLinearGradient(s->vg, rect.x, rect.y, rect.x, rect.bottom(),
                                             nvgRGBAf(0.0, 0.0, 0.0, 0.05), nvgRGBAf(0.0, 0.0, 0.0, 0.35)));
 
   nvgFillColor(s->vg, COLOR_WHITE);

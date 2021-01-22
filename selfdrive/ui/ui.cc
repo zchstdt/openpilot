@@ -219,6 +219,7 @@ static void update_params(UIState *s) {
 static void update_vision(UIState *s) {
   if (!s->vipc_client->connected && s->started) {
     s->vipc_client = s->scene.frontview ? s->vipc_client_front : s->vipc_client_rear;
+    LOGE("VisionIPC connect");
 
     if (s->vipc_client->connect(false)){
       ui_init_vision(s);
@@ -229,6 +230,8 @@ static void update_vision(UIState *s) {
     VisionBuf * buf = s->vipc_client->recv();
     if (buf != nullptr){
       s->last_frame = buf;
+    } else {
+      LOGE("VisionIPC receive timeout");
     }
   }
 }
@@ -244,7 +247,9 @@ void ui_update(UIState *s) {
     s->active_app = cereal::UiLayoutState::App::HOME;
     s->scene.sidebar_collapsed = false;
     s->sound->stop();
+
     s->vipc_client->connected = false;
+    s->last_frame = nullptr;
   } else if (s->started && s->status == STATUS_OFFROAD) {
     s->status = STATUS_DISENGAGED;
     s->started_frame = s->sm->frame;
