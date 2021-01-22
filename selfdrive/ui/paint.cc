@@ -159,24 +159,28 @@ static void draw_frame(UIState *s) {
     glBindVertexArray(s->frame_vao[0]);
     out_mat = &s->rear_frame_mat;
   }
-  glActiveTexture(GL_TEXTURE0);
+  assert(glGetError() == GL_NO_ERROR);
 
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, s->texture[f->idx]->frame_tex);
+  assert(glGetError() == GL_NO_ERROR);
 
   // this is handled in ion on QCOM
 #ifndef QCOM
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, f->width, f->height, 0, GL_RGB, GL_UNSIGNED_BYTE, f->addr);
+  assert(glGetError() == GL_NO_ERROR);
 #endif
 
   glUseProgram(s->gl_shader->prog);
   glUniform1i(s->gl_shader->getUniformLocation("uTexture"), 0);
   glUniformMatrix4fv(s->gl_shader->getUniformLocation("uTransform"), 1, GL_TRUE, out_mat->v);
-
   assert(glGetError() == GL_NO_ERROR);
+
   glEnableVertexAttribArray(0);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (const void*)0);
   glDisableVertexAttribArray(0);
   glBindVertexArray(0);
+  assert(glGetError() == GL_NO_ERROR);
 }
 
 static void ui_draw_vision_lane_lines(UIState *s) {
@@ -385,10 +389,12 @@ static void ui_draw_vision_frame(UIState *s) {
   glEnable(GL_SCISSOR_TEST);
   glViewport(s->video_rect.x, s->video_rect.y, s->video_rect.w, s->video_rect.h);
   glScissor(viz_rect.x, viz_rect.y, viz_rect.w, viz_rect.h);
+  assert(glGetError() == GL_NO_ERROR);
+
   draw_frame(s);
   glDisable(GL_SCISSOR_TEST);
-
   glViewport(0, 0, s->fb_w, s->fb_h);
+  assert(glGetError() == GL_NO_ERROR);
 }
 
 static void ui_draw_vision(UIState *s) {
