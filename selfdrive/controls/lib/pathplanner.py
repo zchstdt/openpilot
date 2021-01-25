@@ -166,8 +166,9 @@ class PathPlanner():
       self.LP.rll_prob *= self.lane_change_ll_prob
     d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
     y_pts = np.interp(v_ego * self.t_idxs[:MPC_N+1], np.linalg.norm(d_path_xyz, axis=1), d_path_xyz[:,1])
-    heading_pts = np.interp(v_ego * self.t_idxs[:MPC_N+1], np.linalg.norm(self.path_xyz, axis=1), self.plan_yaw)
-
+    #heading_pts = np.interp(v_ego * self.t_idxs[:MPC_N+1], np.linalg.norm(self.path_xyz, axis=1), self.plan_yaw)
+    heading_pts = np.arctan2(np.diff(y_pts), np.diff(v_ego * self.t_idxs[:MPC_N+1]))
+    heading_pts = [0] + list(heading_pts)
     v_ego_mpc = max(v_ego, 5.0)  # avoid mpc roughness due to low speed
     assert len(y_pts) == MPC_N + 1
     assert len(heading_pts) == MPC_N + 1
