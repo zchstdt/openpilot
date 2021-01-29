@@ -868,7 +868,8 @@ static void camera_close(CameraState *s) {
 
   // stop devices
   LOG("-- Stop devices");
-  // ret = device_control(s->sensor_fd, CAM_STOP_DEV, s->session_handle, s->sensor_dev_handle);
+  ret = device_control(s->sensor_fd, CAM_START_DEV, s->session_handle, s->sensor_dev_handle);
+  ret = device_control(s->sensor_fd, CAM_STOP_DEV, s->session_handle, s->sensor_dev_handle);
   // LOGD("stop sensor: %d", ret);
   ret = device_control(s->isp_fd, CAM_STOP_DEV, s->session_handle, s->isp_dev_handle);
   LOGD("stop isp: %d", ret);
