@@ -18,7 +18,9 @@ class LatControlCrayCray():
       pid_log.active = False
     else:
       self.angle_steers_des = path_plan.angleSteers - path_plan.angleOffset  # get from MPC/PathPlanner
-      output_steer = (self.angle_steers_des *curv_factor / sr + 0.42*roll) / 0.08
+      curv_des = -self.angle_steers_des * curv_factor / sr
+      curv_rate_des = -path_plan.rateSteers * curv_factor / sr
+      output_steer = -(-2.6817*curv_des + .2776*CS.vEgo*curv_des + .315*CS.vEgo*curv_rate_des - .8707*curv_rate_des - 1.55*roll)
       pid_log.active = True
       pid_log.output = output_steer
     return output_steer, float(self.angle_steers_des), pid_log
