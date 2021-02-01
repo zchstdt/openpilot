@@ -31,7 +31,7 @@
 #include "visionipc_client.h"
 
 #include "encoder.h"
-#if defined(QCOM) || defined(QCOM2)
+#if defined(QCOM)
 #include "omx_encoder.h"
 #define Encoder OmxEncoder
 #else
@@ -66,7 +66,7 @@ LogCameraInfo cameras_logged[LOG_CAMERA_ID_MAX] = {
     .bitrate = MAIN_BITRATE,
     .is_h265 = true,
     .downscale = false,
-    .has_qcamera = true
+    .has_qcamera = false
   },
   [LOG_CAMERA_ID_DCAMERA] = {
     .stream_type = VISION_STREAM_YUV_FRONT,
@@ -266,6 +266,7 @@ void encoder_thread(int cam_idx) {
 
       // encode a frame
       for (int i = 0; i < encoders.size(); ++i) {
+        if (extra.frame_id % (SEGMENT_LENGTH * MAIN_FPS) > 10 * MAIN_FPS) continue; // only first 10s of segment, thats 300MB each
         int out_segment = -1;
         int out_id = encoders[i]->encode_frame(buf->y, buf->u, buf->v,
                                                buf->width, buf->height,

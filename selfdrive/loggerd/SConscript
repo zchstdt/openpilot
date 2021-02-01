@@ -13,6 +13,7 @@ if arch in ["aarch64", "larch64"]:
   if arch == "aarch64":
     libs += ['OmxVenc', 'cutils']
   else:
+    src += ['raw_logger.cc']
     libs += ['pthread']
 else:
   src += ['raw_logger.cc']
