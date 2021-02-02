@@ -206,7 +206,7 @@ routes = {
     'enableCamera': True,
   },
   "b2a38c712dcf90bd|2020-05-18--18-12-48": {
-    'carFingerprint': HYUNDAI.SONATA_2019,
+    'carFingerprint': HYUNDAI.SONATA_LF,
     'enableCamera': True,
   },
   "5875672fc1d4bf57|2020-07-23--21-33-28": {
@@ -258,6 +258,12 @@ routes = {
   },
   "3456ad0cd7281b24|2020-12-13--17-45-56": {
     'carFingerprint': TOYOTA.CAMRY_TSS2,
+    'enableCamera': True,
+    'enableDsu': False,
+    'fingerprintSource': 'fixed',
+  },
+  "ffccc77938ddbc44|2021-01-04--16-55-41": {
+    'carFingerprint': TOYOTA.CAMRYH_TSS2,
     'enableCamera': True,
     'enableDsu': False,
     'fingerprintSource': 'fixed',
@@ -352,6 +358,11 @@ routes = {
     'enableCamera': True,
     'enableDsu': False,
   },
+  "37041c500fd30100|2020-12-30--12-17-24": {
+    'carFingerprint': TOYOTA.LEXUS_ESH,
+    'enableCamera': True,
+    'enableDsu': True,
+  },
   "886fcd8408d570e9|2020-01-29--05-11-22": {
       'carFingerprint': TOYOTA.LEXUS_RX,
       'enableCamera': True,
@@ -420,6 +431,10 @@ routes = {
   },
   "76b83eb0245de90e|2019-10-20--15-42-29": {
     'carFingerprint': VOLKSWAGEN.GOLF,
+    'enableCamera': True,
+  },
+  "07667b885add75fd|2021-01-23--19-48-42": {
+    'carFingerprint': VOLKSWAGEN.AUDI_A3,
     'enableCamera': True,
   },
   "3c8f0c502e119c1c|2020-06-30--12-58-02": {
