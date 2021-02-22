@@ -206,11 +206,18 @@ __kernel void debayer10(const __global uchar * in,
     }
   }
 
-  rgb = clamp(0.0h, 1.0h, rgb);
-  rgb = color_correct(rgb, (int)ggain);
+  //rgb.x = (half)x_global / (half)RGB_WIDTH;
+  //rgb.y = (half)y_global / (half)RGB_HEIGHT;
+  //rgb.z = 1.0 - (half)y_global / (half)RGB_HEIGHT;
+  rgb = ((half)x_global / (half)RGB_WIDTH);
+  if (y_global < 502 && y_global > 500) rgb = 1.0;
+  if (y_global < 708 && y_global > 704) rgb = 0.0;
 
-  out[out_idx + 0] = (uchar)(rgb.z);
-  out[out_idx + 1] = (uchar)(rgb.y);
-  out[out_idx + 2] = (uchar)(rgb.x);
+  rgb = clamp(0.0h, 1.0h, rgb);
+  //rgb = color_correct(rgb, (int)ggain);
+
+  out[out_idx + 0] = (uchar)(255.0*rgb.z);
+  out[out_idx + 1] = (uchar)(255.0*rgb.y);
+  out[out_idx + 2] = (uchar)(255.0*rgb.x);
 
 }

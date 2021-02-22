@@ -18,8 +18,8 @@
 // TODO: this is also hardcoded in common/transformations/camera.py
 // TODO: choose based on frame input size
 #ifdef QCOM2
-const float y_offset = 150.0;
-const float zoom = 1.1;
+const float y_offset = 0.0;
+const float zoom = 1.0;
 const mat3 intrinsic_matrix = (mat3){{
   2648.0, 0.0, 1928.0/2,
   0.0, 2648.0, 1208.0/2,
@@ -170,6 +170,7 @@ static void draw_frame(UIState *s) {
 }
 
 static void ui_draw_vision_lane_lines(UIState *s) {
+  return;
   const UIScene &scene = s->scene;
   // paint lanelines
   for (int i = 0; i < std::size(scene.lane_line_vertices); i++) {
@@ -301,13 +302,6 @@ static void ui_draw_driver_view(UIState *s) {
 }
 
 static void ui_draw_vision_header(UIState *s) {
-  NVGpaint gradient = nvgLinearGradient(s->vg, s->viz_rect.x,
-                        s->viz_rect.y+(header_h-(header_h/2.5)),
-                        s->viz_rect.x, s->viz_rect.y+header_h,
-                        nvgRGBAf(0,0,0,0.45), nvgRGBAf(0,0,0,0));
-
-  ui_fill_rect(s->vg, {s->viz_rect.x, s->viz_rect.y, s->viz_rect.w, header_h}, gradient);
-
   ui_draw_vision_maxspeed(s);
   ui_draw_vision_speed(s);
   ui_draw_vision_event(s);
