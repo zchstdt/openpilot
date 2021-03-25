@@ -23,39 +23,35 @@ from selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
 INJECT_MODEL = 0
 
 segments = {
-  "d83f36766f8012a5|2020-02-05--18-42-21--2": {
-    'car_brand': "HONDA",
-    'carFingerprint': HONDA.CIVIC_BOSCH_DIESEL,
-  },
-  "a74b011b32b51b56|2020-07-26--17-09-36--6": {
+  "0982d79ebb0de295|2021-01-08--10-13-10--6": {
     'car_brand': "HONDA",
     'carFingerprint': HONDA.CIVIC,
   },
-  "77611a1fac303767|2020-02-29--13-29-33--3": {
-    'car_brand': "TOYOTA",
-    'carFingerprint': TOYOTA.COROLLA_TSS2,
+  "a8e8bf6a3864361b|2021-01-04--03-01-18--2": {
+    'car_brand': "HONDA",
+    'carFingerprint': HONDA.ACCORD,
   },
-  "b14c5b4742e6fc85|2020-10-14--11-04-47--4": {
-    'car_brand': "TOYOTA",
+  "0982d79ebb0de295|2021-01-03--20-03-36--6": {
+    'car_brand': "TOYOTA2",
     'carFingerprint': TOYOTA.RAV4,
   },
-  "0982d79ebb0de295|2020-10-18--19-11-36--5": {
+  "0982d79ebb0de295|2021-01-04--17-13-21--13: {
     'car_brand': "TOYOTA",
     'carFingerprint': TOYOTA.PRIUS,
   },
-  "b6849f5cf2c926b1|2020-02-28--07-29-48--13": {
+  "52d86230ee29aa84|2021-01-10--17-16-34--30": {
     'car_brand': "CHRYSLER",
     'carFingerprint': CHRYSLER.PACIFICA_2018,
   },
-  "5b7c365c50084530|2020-04-15--16-13-24--3": {
+  "02c45f73a2e5c6e9|2021-01-01--19-08-22--1": {
     'car_brand': "HYUNDAI",
     'carFingerprint': HYUNDAI.SONATA,
   },
-  #"7873afaf022d36e2|2019-07-03--18-46-44--0": {
-  #  'car_brand': "SUBARU",
-  #  'carFingerprint': SUBARU.IMPREZA,
-  #  'fingerprintSource': 'fixed',
-  #},
+  "4d70bc5e608678be|2021-01-15--17-02-04--5": {
+    'car_brand': "SUBARU",
+    'carFingerprint': SUBARU.IMPREZA,
+    'fingerprintSource': 'fixed',
+  },
   "c321c6b697c5a5ff|2020-06-23--11-04-33--12": {
     'car_brand': "SUBARU",
     'carFingerprint': SUBARU.FORESTER,
@@ -64,21 +60,21 @@ segments = {
   #  'car_brand': "SUBARU_LEGACY",
   #  'carFingerprint': SUBARU.OUTBACK_PREGLOBAL,
   #},
-  "76b83eb0245de90e|2020-03-05--19-16-05--3": {
+  "e2a273d7e6eecec2|2021-03-03--16-05-26--4": {
     'car_brand': "VOLKSWAGEN",
     'carFingerprint': VOLKSWAGEN.GOLF,
   },
-  "fbbfa6af821552b9|2020-03-03--08-09-43--0": {
+  "e4d79cf6b8b19a0d|2021-01-17--14-48-08--7": {
     'car_brand': "NISSAN",
     'carFingerprint': NISSAN.XTRAIL,
   },
-  "7cc2a8365b4dd8a9|2018-12-02--12-10-44--2": {
+  "ae3ed0eb20960a20|2021-01-15--15-04-06--8": {
     'car_brand': "GM",
-    'carFingerprint': GM.ACADIA,
+    'carFingerprint': GM.VOLT,
   },
 }
 
-# ford doesn't need to be tested until a full port is done
+# dashcamOnly makes don't need to be tested until a full port is done
 excluded_interfaces = ["mock", "ford", "mazda"]
 
 BASE_URL = "https://commadataci.blob.core.windows.net/openpilotci/"
@@ -223,9 +219,11 @@ if __name__ == "__main__":
     f.write(diff2)
   print(diff1)
 
-  print("TEST", "FAILED" if failed else "SUCCEEDED")
-
-  print("\n\nTo update the reference logs for this test run:")
-  print("./update_refs.py")
+  if failed:
+    print("TEST FAILED")
+    print("\n\nTo update the reference logs for this test run:")
+    print("./update_refs.py")
+  else:
+    print("TEST SUCCEEDED")
 
   sys.exit(int(failed))

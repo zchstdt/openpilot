@@ -11,14 +11,17 @@ QtSound::QtSound() {
 bool QtSound::play(AudibleAlert alert) {
   int loops = sound_map[alert].second> - 1 ? sound_map[alert].second : QSoundEffect::Infinite;
   sounds[alert].setLoopCount(loops);
-  sounds[alert].setVolume(0.7);
+  sounds[alert].setVolume(volume);
   sounds[alert].play();
   return true;
 }
 
 void QtSound::stop() {
   for (auto &kv : sounds) {
-    kv.second.stop();
+    // Only stop repeating sounds
+    if (sound_map[kv.first].second != 0) {
+      kv.second.stop();
+    }
   }
 }
 
