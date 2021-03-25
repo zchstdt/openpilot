@@ -35,7 +35,7 @@ segments = {
     'car_brand': "TOYOTA2",
     'carFingerprint': TOYOTA.RAV4,
   },
-  "0982d79ebb0de295|2021-01-04--17-13-21--13: {
+  "0982d79ebb0de295|2021-01-04--17-13-21--13": {
     'car_brand': "TOYOTA",
     'carFingerprint': TOYOTA.PRIUS,
   },
