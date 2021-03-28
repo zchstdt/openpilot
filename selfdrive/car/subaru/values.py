@@ -126,6 +126,7 @@ FW_VERSIONS = {
     # 2018 Crosstrek - UDM / @pemerick07
     # 2018 Crosstrek - UDM / @rwalsh3 (new engine fw)
     # 2019 Crosstrek - UDM / @Nooks Cranny
+    # 2019 Impreza - UDM / @cheesypotato
     # Ecu, addr, subaddr: ROM ID
     (Ecu.esp, 0x7b0, None): [
       b'\x7a\x94\x3f\x90\x00',
@@ -168,6 +169,7 @@ FW_VERSIONS = {
       b'\xe3\xf5\a\x00\x00',
       b'\xe3\xf5C\x00\x00',
       b'\xe5\xf5B\x00\x00',
+      b'\xe5\xf5$\000\000',
     ],
   },
   CAR.FORESTER_PREGLOBAL: {
@@ -229,6 +231,7 @@ FW_VERSIONS = {
     # 2016 Outback Premium 2.5 - UDM / @Troy
     # 2018 Subaru Outback 2.0d - ADM / @Richo
     # 2017 Subaru Outback 2.5 - UDM / @chewbaru
+    # 2017 Subaru Outback - UDM / @the3seashells
     # Ecu, addr, subaddr: ROM ID
     (Ecu.esp, 0x7b0, None): [
       b'{\x9a\xac\x00',
@@ -262,6 +265,7 @@ FW_VERSIONS = {
       b'\xab*@@\a',
       b'\xb5q\xe0@\a',
       b'\xb4"@0\a',
+      b'\xb4"@p\a',
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xbd\xfb\xe0\x80\x00',
@@ -271,6 +275,7 @@ FW_VERSIONS = {
       b'\xbe\xf2@p\x00',
       b'\xbc\xaf\xe0`\x00',
       b'\xbd\xf2@`\x00',
+      b'\xbd\xf2@\x81\000',
     ],
   },
   # Outback with reversed driver torque signal
