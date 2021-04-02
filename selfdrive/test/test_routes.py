@@ -444,7 +444,6 @@ routes = {
   "3c8f0c502e119c1c|2020-06-30--12-58-02": {
     'carFingerprint': SUBARU.ASCENT,
     'enableCamera': True,
-    'fingerprintSource': 'fixed',
   },
   "c321c6b697c5a5ff|2020-06-23--11-04-33": {
     'carFingerprint': SUBARU.FORESTER,
@@ -465,7 +464,6 @@ routes = {
   "791340bc01ed993d|2019-03-10--16-28-08": {
     'carFingerprint': SUBARU.IMPREZA,
     'enableCamera': True,
-    'fingerprintSource': 'fixed',
   },
   # Dashcam
   "95441c38ae8c130e|2020-06-08--12-10-17": {
