@@ -22,6 +22,22 @@ from selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
 
 INJECT_MODEL = 0
 
+#segments = [
+#  ("HYUNDAI", "02c45f73a2e5c6e9|2021-01-01--19-08-22--1"),     # HYUNDAI.SONATA
+#  ("TOYOTA", "0982d79ebb0de295|2021-01-04--17-13-21--13"),     # TOYOTA.PRIUS (INDI)
+#  ("TOYOTA2", "0982d79ebb0de295|2021-01-03--20-03-36--6"),     # TOYOTA.RAV4  (LQR)
+#  ("HONDA", "0982d79ebb0de295|2021-01-08--10-13-10--6"),       # HONDA.CIVIC (NIDEC)
+#  ("HONDA2", "a8e8bf6a3864361b|2021-01-04--03-01-18--2"),      # HONDA.ACCORD (BOSCH)
+#  ("CHRYSLER", "52d86230ee29aa84|2021-01-10--17-16-34--30"),   # CHRYSLER.PACIFICA
+#  ("SUBARU", "4d70bc5e608678be|2021-01-15--17-02-04--5"),      # SUBARU.IMPREZA
+#  ("GM", "ae3ed0eb20960a20|2021-01-15--15-04-06--8"),          # GM.VOLT
+#  ("NISSAN", "e4d79cf6b8b19a0d|2021-01-17--14-48-08--7"),      # NISSAN.XTRAIL
+#  ("VOLKSWAGEN", "4634226ed41b59ea|2021-03-26--14-14-18--14"), # VW.AUDI_A3_MK3
+#
+#  # Enable when port is tested and dascamOnly is no longer set
+#  #("MAZDA", "32a319f057902bb3|2020-04-27--15-18-58--2"),      # MAZDA.CX5
+#]
+
 segments = {
   "0982d79ebb0de295|2021-01-08--10-13-10--6": {
     'car_brand': "HONDA",
@@ -60,9 +76,9 @@ segments = {
   #  'car_brand': "SUBARU_LEGACY",
   #  'carFingerprint': SUBARU.OUTBACK_PREGLOBAL,
   #},
-  "e2a273d7e6eecec2|2021-03-03--16-05-26--4": {
+  "4634226ed41b59ea|2021-03-26--14-14-18--14": {
     'car_brand': "VOLKSWAGEN",
-    'carFingerprint': VOLKSWAGEN.GOLF,
+    'carFingerprint': VOLKSWAGEN.AUDI_A3_MK3,
   },
   "e4d79cf6b8b19a0d|2021-01-17--14-48-08--7": {
     'car_brand': "NISSAN",
