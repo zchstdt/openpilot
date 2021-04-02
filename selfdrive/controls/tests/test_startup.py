@@ -49,7 +49,7 @@ class TestStartup(unittest.TestCase):
     params.put("OpenpilotEnabledToggle", b"1")
     params.put("CommunityFeaturesToggle", b"1" if toggle_enabled else b"0")
 
-    time.sleep(12) # wait for controlsd to be ready
+    time.sleep(2) # wait for controlsd to be ready
 
     msg = messaging.new_message('pandaState')
     msg.pandaState.pandaType = log.PandaState.PandaType.uno
