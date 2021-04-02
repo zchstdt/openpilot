@@ -21,7 +21,6 @@ from selfdrive.manager.process_config import managed_processes
 NUMPY_TOLERANCE = 1e-7
 CI = "CI" in os.environ
 
-
 ProcessConfig = namedtuple('ProcessConfig', ['proc_name', 'pub_sub', 'ignore', 'init_callback', 'should_recv_callback', 'tolerance'])
 
 
@@ -230,7 +229,7 @@ CONFIGS = [
       "deviceState": [], "pandaState": [], "liveCalibration": [], "driverMonitoringState": [], "longitudinalPlan": [], "lateralPlan": [], "liveLocationKalman": [], "liveParameters": [], "radarState": [],
       "modelV2": [], "driverCameraState": [], "roadCameraState": [], "ubloxRaw": [], "managerState": [],
     },
-    ignore=["logMonoTime", "valid", "controlsState.startMonoTime", "controlsState.cumLagMs", "carParams.fingerprintSource"],
+    ignore=["logMonoTime", "valid", "controlsState.startMonoTime", "controlsState.cumLagMs"],
     init_callback=fingerprint,
     should_recv_callback=None,
     tolerance=NUMPY_TOLERANCE,

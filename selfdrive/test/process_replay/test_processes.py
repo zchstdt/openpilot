@@ -2,93 +2,30 @@
 import argparse
 import os
 import sys
-from typing import Any, cast
+from typing import Any
 
 from selfdrive.car.car_helpers import interface_names
 from selfdrive.test.process_replay.compare_logs import compare_logs
-from selfdrive.test.process_replay.process_replay import (CONFIGS,
-                                                          replay_process)
+from selfdrive.test.process_replay.process_replay import CONFIGS, replay_process
 from tools.lib.logreader import LogReader
-from selfdrive.car.chrysler.values import CAR as CHRYSLER
-from selfdrive.car.gm.values import CAR as GM
-#from selfdrive.car.ford.values import CAR as FORD
-from selfdrive.car.honda.values import CAR as HONDA
-from selfdrive.car.hyundai.values import CAR as HYUNDAI
-from selfdrive.car.nissan.values import CAR as NISSAN
-#from selfdrive.car.mazda.values import CAR as MAZDA
-from selfdrive.car.subaru.values import CAR as SUBARU
-from selfdrive.car.toyota.values import CAR as TOYOTA
-from selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
 
 INJECT_MODEL = 0
 
-#segments = [
-#  ("HYUNDAI", "02c45f73a2e5c6e9|2021-01-01--19-08-22--1"),     # HYUNDAI.SONATA
-#  ("TOYOTA", "0982d79ebb0de295|2021-01-04--17-13-21--13"),     # TOYOTA.PRIUS (INDI)
-#  ("TOYOTA2", "0982d79ebb0de295|2021-01-03--20-03-36--6"),     # TOYOTA.RAV4  (LQR)
-#  ("HONDA", "0982d79ebb0de295|2021-01-08--10-13-10--6"),       # HONDA.CIVIC (NIDEC)
-#  ("HONDA2", "a8e8bf6a3864361b|2021-01-04--03-01-18--2"),      # HONDA.ACCORD (BOSCH)
-#  ("CHRYSLER", "52d86230ee29aa84|2021-01-10--17-16-34--30"),   # CHRYSLER.PACIFICA
-#  ("SUBARU", "4d70bc5e608678be|2021-01-15--17-02-04--5"),      # SUBARU.IMPREZA
-#  ("GM", "ae3ed0eb20960a20|2021-01-15--15-04-06--8"),          # GM.VOLT
-#  ("NISSAN", "e4d79cf6b8b19a0d|2021-01-17--14-48-08--7"),      # NISSAN.XTRAIL
-#  ("VOLKSWAGEN", "4634226ed41b59ea|2021-03-26--14-14-18--14"), # VW.AUDI_A3_MK3
-#
-#  # Enable when port is tested and dascamOnly is no longer set
-#  #("MAZDA", "32a319f057902bb3|2020-04-27--15-18-58--2"),      # MAZDA.CX5
-#]
+segments = [
+  ("HYUNDAI", "02c45f73a2e5c6e9|2021-01-01--19-08-22--1"),     # HYUNDAI.SONATA
+  ("TOYOTA", "0982d79ebb0de295|2021-01-04--17-13-21--13"),     # TOYOTA.PRIUS (INDI)
+  ("TOYOTA2", "0982d79ebb0de295|2021-01-03--20-03-36--6"),     # TOYOTA.RAV4  (LQR)
+  ("HONDA", "0982d79ebb0de295|2021-01-08--10-13-10--6"),       # HONDA.CIVIC (NIDEC)
+  ("HONDA2", "a8e8bf6a3864361b|2021-01-04--03-01-18--2"),      # HONDA.ACCORD (BOSCH)
+  ("CHRYSLER", "52d86230ee29aa84|2021-01-10--17-16-34--30"),   # CHRYSLER.PACIFICA
+  ("SUBARU", "4d70bc5e608678be|2021-01-15--17-02-04--5"),      # SUBARU.IMPREZA
+  ("GM", "ae3ed0eb20960a20|2021-01-15--15-04-06--8"),          # GM.VOLT
+  ("NISSAN", "e4d79cf6b8b19a0d|2021-01-17--14-48-08--7"),      # NISSAN.XTRAIL
+  ("VOLKSWAGEN", "4634226ed41b59ea|2021-03-26--14-14-18--14"), # VW.AUDI_A3_MK3
 
-segments = {
-  "0982d79ebb0de295|2021-01-08--10-13-10--6": {
-    'car_brand': "HONDA",
-    'carFingerprint': HONDA.CIVIC,
-  },
-  "a8e8bf6a3864361b|2021-01-04--03-01-18--2": {
-    'car_brand': "HONDA",
-    'carFingerprint': HONDA.ACCORD,
-  },
-  "0982d79ebb0de295|2021-01-03--20-03-36--6": {
-    'car_brand': "TOYOTA2",
-    'carFingerprint': TOYOTA.RAV4,
-  },
-  "0982d79ebb0de295|2021-01-04--17-13-21--13": {
-    'car_brand': "TOYOTA",
-    'carFingerprint': TOYOTA.PRIUS,
-  },
-  "52d86230ee29aa84|2021-01-10--17-16-34--30": {
-    'car_brand': "CHRYSLER",
-    'carFingerprint': CHRYSLER.PACIFICA_2018,
-  },
-  "02c45f73a2e5c6e9|2021-01-01--19-08-22--1": {
-    'car_brand': "HYUNDAI",
-    'carFingerprint': HYUNDAI.SONATA,
-  },
-  "4d70bc5e608678be|2021-01-15--17-02-04--5": {
-    'car_brand': "SUBARU",
-    'carFingerprint': SUBARU.IMPREZA,
-    'fingerprintSource': 'fixed',
-  },
-  #"c321c6b697c5a5ff|2020-06-23--11-04-33--12": {
-  #  'car_brand': "SUBARU",
-  #  'carFingerprint': SUBARU.FORESTER,
-  #},
-  #"5ab784f361e19b78|2020-06-08--16-30-41--25": {
-  #  'car_brand': "SUBARU_LEGACY",
-  #  'carFingerprint': SUBARU.OUTBACK_PREGLOBAL,
-  #},
-  "4634226ed41b59ea|2021-03-26--14-14-18--14": {
-    'car_brand': "VOLKSWAGEN",
-    'carFingerprint': VOLKSWAGEN.AUDI_A3_MK3,
-  },
-  "e4d79cf6b8b19a0d|2021-01-17--14-48-08--7": {
-    'car_brand': "NISSAN",
-    'carFingerprint': NISSAN.XTRAIL,
-  },
-  "ae3ed0eb20960a20|2021-01-15--15-04-06--8": {
-    'car_brand': "GM",
-    'carFingerprint': GM.VOLT,
-  },
-}
+  # Enable when port is tested and dascamOnly is no longer set
+  #("MAZDA", "32a319f057902bb3|2020-04-27--15-18-58--2"),      # MAZDA.CX5
+]
 
 # dashcamOnly makes don't need to be tested until a full port is done
 excluded_interfaces = ["mock", "ford", "mazda"]
@@ -200,20 +137,15 @@ if __name__ == "__main__":
 
   # check to make sure all car brands are tested
   if FULL_TEST:
-    tested_cars = set(keys["car_brand"].lower() for segment, keys in segments.items())
+    tested_cars = set(c.lower() for c, _ in segments)
     untested = (set(interface_names) - set(excluded_interfaces)) - tested_cars
     assert len(untested) == 0, "Cars missing routes: %s" % (str(untested))
 
   results: Any = {}
-  for segment, keys in segments.items():
-    if (cars_whitelisted and keys["car_brand"].upper() not in args.whitelist_cars) or \
-       (not cars_whitelisted and keys["car_brand"].upper() in args.blacklist_cars):
+  for car_brand, segment in segments:
+    if (cars_whitelisted and car_brand.upper() not in args.whitelist_cars) or \
+       (not cars_whitelisted and car_brand.upper() in args.blacklist_cars):
       continue
-
-    if keys.get('fingerprintSource', None) == 'fixed':
-      os.environ['FINGERPRINT'] = cast(str, keys["carFingerprint"])
-    else:
-      os.environ['FINGERPRINT'] = ""
 
     print("***** testing route segment %s *****\n" % segment)
 
