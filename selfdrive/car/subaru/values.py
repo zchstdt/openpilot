@@ -240,7 +240,6 @@ FW_VERSIONS = {
     # 2015 Outback Limited 2.5 - ADM / @Bugsy
     # 2015 Outback Premium 3.6i - UDM / @aidrive
     # 2016 Outback Premium 2.5 - UDM / @Troy
-    # 2018 Subaru Outback 2.0d - ADM / @Richo
     # 2017 Subaru Outback 2.5 - UDM / @chewbaru
     # 2017 Subaru Outback - UDM / @the3seashells
     # Ecu, addr, subaddr: ROM ID
@@ -249,7 +248,6 @@ FW_VERSIONS = {
       b'k\x97\xac\x00',
       b'\x5b\xf7\xbc\x03',
       b'[\xf7\xac\x03',
-      b'\x8b\x99\xac\x00',
       b'{\x97\xac\x00',
     ],
     (Ecu.eps, 0x746, None): [
@@ -266,7 +264,6 @@ FW_VERSIONS = {
       b'\x00\x00c\x94\x00\x00\x00\x00',
       b'\x00\x00c\x94\x1f@\x10\b',
       b'\x00\x00c\xb7\x1f@\x10\x16',
-      b'\x00\x00d\x95\x1f@ \x0f',
     ],
     (Ecu.engine, 0x7e0, None): [
       b'\xb4+@p\a',
@@ -274,7 +271,6 @@ FW_VERSIONS = {
       b'\xa0\x62\x41\x71\x07',
       b'\xa0*@q\a',
       b'\xab*@@\a',
-      b'\xb5q\xe0@\a',
       b'\xb4"@0\a',
       b'\xb4"@p\a',
     ],
@@ -284,7 +280,6 @@ FW_VERSIONS = {
       b'\xbf\xe2\x40\x80\x00',
       b'\xbf\xf2@\x80\x00',
       b'\xbe\xf2@p\x00',
-      b'\xbc\xaf\xe0`\x00',
       b'\xbd\xf2@`\x00',
       b'\xbd\xf2@\x81\000',
     ],
@@ -297,12 +292,14 @@ FW_VERSIONS = {
     # 2019 Outback UDM / @Valhalla
     # 2018 Outback 2.5 / @haak
     # 2018 Outback 3.6r USDM / @Scripty_
+    # 2018 Subaru Outback 2.0d - ADM / @Richo
     # Ecu, addr, subaddr: ROM ID
     (Ecu.esp, 0x7b0, None): [
       b'\x8b\x97\xac\x00',
       b'\x8b\x9a\xac\x00',
       b'\x9b\x97\xac\x00',
       b'\x8b\x97\xbc\x00',
+      b'\x8b\x99\xac\x00',
     ],
     (Ecu.eps, 0x746, None): [
       b'{\xb0\x00\x00',
@@ -312,6 +309,7 @@ FW_VERSIONS = {
       b'\x00\x00df\x1f@ \n',
       b'\x00\x00d\xfe\x1f@ \x15',
       b'\x00\x00d\x95\x00\x00\x00\x00',
+      b'\x00\x00d\x95\x1f@ \x0f',
     ],
     (Ecu.engine, 0x7e0, None): [
       b'\xb5"@p\a',
@@ -319,6 +317,7 @@ FW_VERSIONS = {
       b'\xb5"@P\a',
       b'\xc4"@0\a',
       b'\xb5b@1\x07',
+      b'\xb5q\xe0@\a',
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xbc\xf2@\x81\x00',
@@ -327,6 +326,7 @@ FW_VERSIONS = {
       b'\xbb\xf2@`\x00',
       b'\xbc\xe2@\x80\x00',
       b'\xbc\xfb\xe0`\x00',
+      b'\xbc\xaf\xe0`\x00',
     ],
   },
 }
