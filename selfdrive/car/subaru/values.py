@@ -293,6 +293,7 @@ FW_VERSIONS = {
     # 2018 Outback 2.5 / @haak
     # 2018 Outback 3.6r USDM / @Scripty_
     # 2018 Subaru Outback 2.0d - ADM / @Richo
+    # 2019 Outback 2.5i Premium / @Z-dawg Swizzlepants
     # Ecu, addr, subaddr: ROM ID
     (Ecu.esp, 0x7b0, None): [
       b'\x8b\x97\xac\x00',
@@ -310,6 +311,7 @@ FW_VERSIONS = {
       b'\x00\x00d\xfe\x1f@ \x15',
       b'\x00\x00d\x95\x00\x00\x00\x00',
       b'\x00\x00d\x95\x1f@ \x0f',
+      b'\x00\x00d\xfe\x00\x00\x00\x00',
     ],
     (Ecu.engine, 0x7e0, None): [
       b'\xb5"@p\a',
@@ -318,6 +320,7 @@ FW_VERSIONS = {
       b'\xc4"@0\a',
       b'\xb5b@1\x07',
       b'\xb5q\xe0@\a',
+      b'\xc4\"@0\a',
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xbc\xf2@\x81\x00',
